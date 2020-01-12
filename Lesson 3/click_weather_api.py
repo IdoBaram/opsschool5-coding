@@ -2,7 +2,7 @@ from requests import get
 import click
 import sys
 
-URL = 'http://api.weatherstack.com/current?access_key='
+URL = 'http://api.weatherstack.com/current'
 
 
 @click.command()
@@ -22,7 +22,7 @@ def main(weather_access_key, degree_type, city_name):
 
     city_list = city_name.split(',')
     for city in city_list:
-        response = get(URL+'%s&query=%s&units=%s' % (weather_access_key, city, unit))
+        response = get(URL+'?access_key=%s&query=%s&units=%s' % (weather_access_key, city, unit))
         response_json = response.json()
         if 'error' in response_json:
             if 'invalid_access_key' in response_json['error']['type']:
