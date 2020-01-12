@@ -10,10 +10,10 @@ URL = 'http://api.weatherstack.com/current?access_key='
 @click.option('--city', 'city_name')
 @click.option('--T', 'degree_type')
 def main(weather_access_key, degree_type, city_name):
-    if degree_type.lower() in 'fahrenheit':
+    if degree_type.lower() == 'fahrenheit':
         unit = 'f'
         temperature_scale = 'Fahrenheit'
-    elif degree_type.lower() in 'celsius':
+    elif degree_type.lower() == 'celsius':
         unit = 'm'
         temperature_scale = 'Celsius'
     else:
@@ -22,13 +22,13 @@ def main(weather_access_key, degree_type, city_name):
 
     city_list = city_name.split(',')
     for city in city_list:
-        get_request_url = get(URL+'%s&query=%s&units=%s' % (weather_access_key, city, unit))
-        response = get_request_url.json()
-        if 'error' in response:
-            if 'invalid_access_key' in response['error']['type']:
+        response = get(URL+'%s&query=%s&units=%s' % (weather_access_key, city, unit))
+        response_json = response.json()
+        if 'error' in response_json:
+            if 'invalid_access_key' in response_json['error']['type']:
                 print('TokenValidationError: Your token is invalid, please verify you are using a valid token, and try'
                       ' again')
-            elif 'request_failed' in response['error']['type']:
+            elif 'request_failed' in response_json['error']['type']:
                 print('''
     Error: The city chosen could not be found, please check if you spelled the name correctly, or try on of these:
     * London
@@ -37,7 +37,7 @@ def main(weather_access_key, degree_type, city_name):
                 ''')
             sys.exit()
         else:
-            weather = response['current']['temperature']
+            weather = response_json['current']['temperature']
             print(
                 'The weather in %s is %s %s' % (city, weather, temperature_scale))
 
