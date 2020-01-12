@@ -20,8 +20,7 @@ def main(weather_access_key, degree_type, city_name):
         print('SyntaxError: The chosen measure unit is invalid, please use "Celsius" or "Fahrenheit" ')
         sys.exit()
 
-    city_list = city_name.split(',')
-    for city in city_list:
+    for city in city_name.split(','):
         response = get(URL+'?access_key=%s&query=%s&units=%s' % (weather_access_key, city, unit))
         response_json = response.json()
         if 'error' in response_json:
