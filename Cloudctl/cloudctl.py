@@ -1,4 +1,6 @@
 import click
+import boto3
+from tabulate import tabulate
 
 
 @click.group()
@@ -15,14 +17,21 @@ def cloudctl(ctx, *args, **kwargs):
 @click.pass_context
 def get(ctx):
     """ get action """
-    print(ctx)
 
 
-@get.group()
+@get.command()
 @click.pass_context
 def instances(ctx):
-    """ get instances """
-    print(ctx)
+    boto_client = boto3.client('ec2')
+    instance_response = boto_client.describe_instances()
+    get_instances_table = []
+    for reservation in instance_response['Reservations']:
+        for instance in reservation['Instances']:
+            for tags in instance['Tags']:
+                if tags['Key'] == 'Name':
+                    get_instances_table.append([instance['InstanceId'], tags['Value'],
+                                                instance['State']['Name'], instance['PublicDnsName']])
+    print(tabulate(get_instances_table, headers=["InstanceId", "Name", "State", "name (PublicDnsName)"]))
 
 
 @cloudctl.group()
