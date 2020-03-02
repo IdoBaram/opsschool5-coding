@@ -31,7 +31,7 @@ def instances(ctx):
                 if tags['Key'] == 'Name':
                     get_instances_table.append([instance['InstanceId'], tags['Value'],
                                                 instance['State']['Name'], instance['PublicDnsName']])
-    print(tabulate(get_instances_table, headers=["InstanceId", "Name", "State", "name (PublicDnsName)"]))
+    print(tabulate(get_instances_table, headers=['InstanceId', 'Name', 'State', 'name (PublicDnsName)']))
 
 
 @cloudctl.group()
